@@ -1,0 +1,12 @@
+prm.tau = 5*[1 1];
+prm.ic = 1;
+prm.a = [1.6 3.6];
+prm.ki = [.4 1];
+prm.ni = [4 5];
+prm.b = [0 0];
+prm.beta = [4 3.7];
+prm.k = [4.25 3.75]; %prm.n(4)=2;
+prm.n = [2 2];%[1.6 2];
+prm.dt = .25;
+prm.fc = 1;
+prm.i = 1;

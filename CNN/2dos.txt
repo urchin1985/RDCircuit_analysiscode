@@ -1,0 +1,51 @@
+6172534865
+
+
+supps:
+1. tracked traj+conf neuron outline>->
+
+2. mod-1 traces>>DONE
+3. pdfr-1gf+tphpdfr1 traces>>DONE
+
+4. stat ctrl of neurons showing increase prior to event<>
+5. cnn ext: model selection>->
+6. aia opto ana>>
+7. aia anatomical connection with roaming/sensory neurons>>
+8. histogram of animal location wt .5 1 1.5 2 hrs>>
+10. rd duration during patch, wt vs pdfr1<>
+
+
+quantified as the area under the curve (AUC) of the Receiver Operating Characteristic (ROC) curve computed on test data
+
+
+
+aia opto ana>>
+awa opto ana>>
+histogram of animal location wt patch
+xcorr gtype>>
+
+
+
+tph-1 patch|>
+1) distance traveled before crossing
+2) roaming duration-->DONE
+3) distribution/(distribution of)average ctx during roaming -->
+4) c.f aia-unc?
+
+
+10/27 TODOs:
+1. frc roaming wtmt
+2. ctx bias wtmt
+3. hist evo wtmt
+4.
+
+10/28 AM: 
+1. AWC opto
+2. supp
+
+
+
+-> median ctx over 10s of secs scale
+-> dist up grad vs dist down grad
+-> pre-dwell neg ctx duration/distance
+

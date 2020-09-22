@@ -1,0 +1,164 @@
+% scan for param sets that give suitable switching behavior for ctx
+idn = 500; XS0=[1 7];
+xr1 = [-1 8]; xr2 = xr1; inc = [.2 .2];
+fid = 0; dq = 0; nfi = 31;
+rl = ceil(length(ilst)/2);
+ng = .1; ip = .65;
+
+mbi = [];
+% inp.i = [ip*ones(1,idn)]; %  .3*ones(1,idn) 0.1*ones(1,200)
+inp.i = [1.65:.025:ip ip*ones(1,idn)]; %  .3*ones(1,idn) 0.1*ones(1,200)
+
+prm = mpset.pm(end);
+prm.i = ip;
+prm.a = [1.6 3.6];
+prm.ki = [.4 1];
+prm.ni = [4 5];
+prm.b = [0 0];
+prm.beta = [4 3.7];
+prm.k = [4.25 3.75]; %prm.n(4)=2;
+prm.n = [2 2];%[1.6 2];
+
+aoi = prm.a(1);
+
+x00 = [-1.7 7.5;1 7.5;5 8];
+fm = 1;
+clear M
+myVid = VideoWriter('NMtranscf.avi');
+% myVid.FrameRate=3;
+open(myVid);
+
+
+% first show difference in phase plots
+ prm1 = prm; prm1.ic = 0;
+ figure(18);clf;hold all
+    subplot(2,2,1)
+    [nco,uo] = nullcfun_nm(xr1,xr2,inc,prm,fid,dq);
+    % % % surf(Z)
+    caxis([0 .75]);
+    set(gca,'xticklabel','','yticklabel','')
+    axis tight manual
+    set(gca,'nextplot','replacechildren');
+    title(['I(t) = ' num2str(prm.i)])
+    ylabel('X2'); %xlabel('X1')
+    hold all
+%     plot(nci1.nx,nco.y,'r--','linewidth',2)
+
+    hold all
+    subplot(2,2,3)
+    [nco,uo] = nullcfun_nm(xr1,xr2,inc,prm1,fid,dq);
+    caxis([0 .75])
+    cmap = cmap_gen({[0 0 .8],[0.7 .9 1]},0);
+    % cmap = cmap(end:-1:1,:);
+    colormap(cmap)
+    set(gca,'xticklabel','','yticklabel','')
+%     title(['I(t) = ' num2str(prm.i)])
+    xlabel('X1'); ylabel('X2'); 
+    hold all
+    plot(nci2.nx,nco.y,'r--','linewidth',2)
+
+    frm = getframe(gcf);
+    writeVideo(myVid,frm)
+%% now show state transition traj
+
+for pi = 1:length(x00)
+    figure(18);clf;hold all
+    clear tp1 tp2 xp11 xp12 xp21 xp22 lp11 lp12 lp21 lp22
+    
+    subplot(2,2,1)
+    [nco,uo] = nullcfun_nm(xr1,xr2,inc,prm,fid,dq);
+% % % surf(Z)
+    caxis([0 .75]);
+    set(gca,'xticklabel','','yticklabel','')
+    axis tight manual 
+set(gca,'nextplot','replacechildren'); 
+
+    hold all
+    subplot(2,2,3)
+    prm1 = prm;
+    prm1.ic = 0;
+    [nco,uo] = nullcfun_nm(xr1,xr2,inc,prm1,fid,dq);
+    caxis([0 .75])
+    cmap = cmap_gen({[0 0 .8],[0.7 .9 1]},0);
+    % cmap = cmap(end:-1:1,:);
+    colormap(cmap)
+    set(gca,'xticklabel','','yticklabel','')
+    hold all
+%     
+    
+    XS0 = x00(pi,:);
+    for xi = 1:floor(length(XS1)/10)
+        subplot(2,2,1)
+        XS1 = runnmod_nsy(XS0,prm,inp,0);
+        XS2 = runnmod_nsy(XS0,prm1,inp,0);
+        if ~exist('tp1','var')
+            tp1 = plot(XS1(1:10:(10*xi),1),XS1(1:10:(10*xi),2),'ko-',...
+                'markersize',5,'markerfacecolor',.7*ones(1,3));
+        else
+            set(tp1,'XData',XS1(1:10:(10*xi),1),'YData',XS1(1:10:(10*xi),2))
+        end
+        
+        if xi>1
+            if norm(XS1(10*xi,:)-XS1(10*(xi-1),:))<.05
+                plot(XS1((10*xi),1),XS1((10*xi),2),'ko','markerfacecolor','r',...
+                    'markersize',10)
+            end
+        end
+        
+        subplot 222; hold all; box off
+        xlim([0 60])
+        if ~exist('lp11','var')
+        lp11 = plot(XS1(1:10:(10*xi),1),'k.-',...
+            'markersize',12);
+        else
+             set(lp11,'YData',XS1(1:10:(10*xi),1))
+        end
+        if ~exist('lp12','var')
+        lp12 = plot(XS1(1:10:(10*xi),2),'k.-',...
+            'markersize',12);
+        else
+             set(lp12,'YData',XS1(1:10:(10*xi),2))
+        end
+        
+        
+        subplot(2,2,3); hold all;
+        if ~exist('tp2','var')
+            tp2 = plot(XS2(1:10:(10*xi),1),XS2(1:10:(10*xi),2),'ko-','markersize',5,'markerfacecolor',.7*ones(1,3));
+        else
+            set(tp2,'XData',XS2(1:10:(10*xi),1),'YData',XS2(1:10:(10*xi),2))
+        end
+        
+        if xi>1
+            if norm(XS2(10*xi,:)-XS2(10*(xi-1),:))<.05
+                plot(XS2((10*xi),1),XS2((10*xi),2),'ko','markerfacecolor','r',...
+                    'markersize',10)
+            end
+        end
+        
+        subplot 224; hold all; box off
+        xlim([0 60])
+        if ~exist('lp21','var')
+        lp21 = plot(XS2(1:10:(10*xi),1),'k.-',...
+            'markersize',12);
+        else
+             set(lp21,'YData',XS2(1:10:(10*xi),1))
+        end
+        if ~exist('lp22','var')
+        lp22 = plot(XS2(1:10:(10*xi),2),'k.-',...
+            'markersize',12);
+        else
+             set(lp22,'YData',XS2(1:10:(10*xi),2))
+        end
+        
+       frm = getframe(gcf);
+        writeVideo(myVid,frm)
+        fm = fm+1;
+    end
+    
+end
+
+close(myVid)
+%%
+savpath = 'C:\Users\Ni Ji\Dropbox (MIT)\ImageSeg_GUI\MNI segmentation\MNI turbotrack (dropbox)\Figures\Model\Animations\';
+cd(savpath)
+
